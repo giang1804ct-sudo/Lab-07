@@ -7,10 +7,10 @@ using System.Collections.Generic;
 
 namespace ThietBiDayHoc
 {
-    // Chon cai co diem cao nhat
+    // Chon cai co diem cao nhat (ban da sua)
     public class HighestPriorityStrategy<T> : ISelectionStrategy<T>
     {
-        private readonly Func<T, double> scoreSelector; // ham tinh diem
+        private readonly Func<T, double> scoreSelector;
 
         public HighestPriorityStrategy(Func<T, double> scoreSelector)
         {
@@ -19,10 +19,11 @@ namespace ThietBiDayHoc
 
         public T Select(IReadOnlyList<T> candidates)
         {
-          
-            T totNhat = candidates[0]; // em dat ten best -> totNhat cho de hieu
+            // FIX: hom qua em bi crash khi list rong, nay em them check
+            if (candidates == null || candidates.Count == 0)
+                throw new NoSuitableItemException("Khong co ung vien nao de chon.");
+            T totNhat = candidates[0]; // van de ten totNhat nhu ban 1
             double diemCaoNhat = scoreSelector(totNhat);
-            // em viet for tu 1 vi phan tu 0 lay roi
             for (int i = 1; i < candidates.Count; i++)
             {
                 double diem = scoreSelector(candidates[i]);
@@ -36,12 +37,14 @@ namespace ThietBiDayHoc
         }
     }
 
-    // Chon cai dau tien trong danh sach
+    // Chon cai dau tien (ban da sua)
     public class FirstAvailableStrategy<T> : ISelectionStrategy<T>
     {
         public T Select(IReadOnlyList<T> candidates)
         {
-           
+            // FIX: them kiem tra rong giong o tren
+            if (candidates == null || candidates.Count == 0)
+                throw new NoSuitableItemException("Khong co ung vien nao de chon.");
             return candidates[0];
         }
     }
