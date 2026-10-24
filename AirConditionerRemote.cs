@@ -7,7 +7,7 @@ using System.Collections.Generic;
 
 namespace ThietBiDayHoc
 {
-    // Dieu khien dieu hoa
+    // Dieu khien dieu hoa (ban da sua)
     public class AirConditionerRemote : TeachingDevice
     {
         public IReadOnlySet<string> CompatibleRooms { get; }
@@ -20,13 +20,19 @@ namespace ThietBiDayHoc
 
         public bool IsCompatibleWith(string roomId)
         {
-            
-            return CompatibleRooms.Contains(roomId);
+            // FIX: hom qua em go "a203" bi sai, nay em cho so sanh thuong/hoa giong nhau
+            if (string.IsNullOrWhiteSpace(roomId))
+                return false;
+            foreach (var r in CompatibleRooms) // em viet foreach cho gon
+            {
+                if (r.ToLower() == roomId.ToLower())
+                    return true;
+            }
+            return false;
         }
 
         public override bool IsReadyForUse()
         {
-            // chi can Available la san sang
             if (Status == DeviceStatus.Available)
                 return true;
             return false;
