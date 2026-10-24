@@ -3,13 +3,14 @@ MSSV: 202418889
 Họ tên: Đặng Thị Hương Giang
 
 ***************/
+
 namespace ThietBiDayHoc
 {
-    // Micro khong day
+    // Micro khong day (ban da sua)
     public class WirelessMicrophone : TeachingDevice
     {
         public int BatteryLevel { get; private set; }
-        public int SignalQuality { get; private set; } // 0 den 100
+        public int SignalQuality { get; private set; }
 
         public WirelessMicrophone(string id, string name, string location, int pin, int song)
             : base(id, name, location)
@@ -20,15 +21,14 @@ namespace ThietBiDayHoc
 
         public override bool IsReadyForUse()
         {
-           
-            if (Status == DeviceStatus.Available && BatteryLevel >= 30)
+            // FIX: hom qua em quen check tin hieu, nay em bo sung them
+            if (Status == DeviceStatus.Available && BatteryLevel >= 30 && SignalQuality >= 40)
                 return true;
             return false;
         }
 
         public override double GetDefaultPriorityScore()
         {
-            // diem = trung binh pin va chat luong tin hieu
             double diem = (BatteryLevel + SignalQuality) / 2.0;
             return diem;
         }

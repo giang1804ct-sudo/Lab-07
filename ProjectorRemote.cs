@@ -3,12 +3,13 @@ MSSV: 202418889
 Họ tên: Đặng Thị Hương Giang
 
 ***************/
+
 namespace ThietBiDayHoc
 {
-    // Dieu khien may chieu
+    // Dieu khien may chieu (ban da sua)
     public class ProjectorRemote : TeachingDevice
     {
-        public int BatteryLevel { get; private set; } // pin tu 0 den 100
+        public int BatteryLevel { get; private set; }
 
         public ProjectorRemote(string id, string name, string location, int pin)
             : base(id, name, location)
@@ -18,16 +19,15 @@ namespace ThietBiDayHoc
 
         public override bool IsReadyForUse()
         {
-            
-            if (BatteryLevel >= 20) 
+            // FIX: hom qua em quen check Status, nay em them vao
+            if (Status == DeviceStatus.Available && BatteryLevel >= 20)
                 return true;
             return false;
         }
 
         public override double GetDefaultPriorityScore()
         {
-            // diem = muc pin
-            return BatteryLevel;
+            return BatteryLevel; // diem = pin
         }
     }
 }
