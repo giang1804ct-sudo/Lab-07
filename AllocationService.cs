@@ -7,7 +7,7 @@ using System.Collections.Generic;
 
 namespace ThietBiDayHoc
 {
-    // Dich vu cap phat tong quat, dung duoc cho nhieu loai thiet bi
+    // Dich vu cap phat tong quat (ban da sua)
     public class AllocationService<T> where T : TeachingDevice
     {
         private readonly IRepository<T> repository;
@@ -21,30 +21,26 @@ namespace ThietBiDayHoc
 
         public void ChangeStrategy(ISelectionStrategy<T> newStrategy)
         {
-            strategy = newStrategy; // doi chien luoc luc chay, khong can sua code
+            strategy = newStrategy;
         }
 
         public T Allocate(Predicate<T> additionalCondition)
         {
-            // B1: lay tat ca tu kho
             IReadOnlyList<T> all = repository.GetAll();
 
-            // B2: loc cai san sang + dieu kien phu, em viet for cho de hieu, chua quen Linq
-            List<T> dsChon = new List<T>(); // em doi ten ungVien -> dsChon
+            List<T> dsChon = new List<T>(); // van de ten dsChon giong ban 1 cho de theo doi
             for (int i = 0; i < all.Count; i++)
             {
-                
-                if (additionalCondition(all[i]))
+                // FIX: hom qua em quen goi IsReadyForUse() nen may pin yeu van bi chon
+                if (all[i].IsReadyForUse() && additionalCondition(all[i]))
                 {
                     dsChon.Add(all[i]);
                 }
             }
 
-            // B3: dung chien luoc de chon
+            // Neu khong co ai thi Select se nem loi, em thay hop ly nen de vay
             T chon = strategy.Select(dsChon);
-
-            // B4: goi Borrow roi tra ve
-            chon.Borrow();
+            chon.Borrow(); // goi Borrow de chuyen sang Borrowed
             return chon;
         }
     }
